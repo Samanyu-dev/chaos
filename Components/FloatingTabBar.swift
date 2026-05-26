@@ -19,6 +19,7 @@ struct FloatingTabBar: View {
                 let isActive = activeTab == tab
                 
                 Button(action: {
+                    SoundManager.shared.playClick()
                     withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
                         activeTab = tab
                     }

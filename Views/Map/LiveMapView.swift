@@ -61,6 +61,7 @@ struct LiveMapView: View {
                     
                     // User Pin (Center Node)
                     FriendMapMarker(user: appViewModel.currentUser, isMe: true) {
+                        SoundManager.shared.playMapPulse()
                         withAnimation(.spring()) {
                             selectedFriend = appViewModel.currentUser
                             showOverlayCard = true
@@ -74,6 +75,7 @@ struct LiveMapView: View {
                         let fy = geo.size.height / 2 + mapDraggedOffset.height + CGFloat(friend.lonOffset * 8000)
                         
                         FriendMapMarker(user: friend, isMe: false) {
+                            SoundManager.shared.playMapPulse()
                             withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) {
                                 selectedFriend = friend
                                 showOverlayCard = true
@@ -229,6 +231,7 @@ struct LiveMapView: View {
             }
         }
         .onAppear {
+            SoundManager.shared.playMapPulse()
             withAnimation(.easeInOut(duration: 4.0).repeatForever(autoreverses: false)) {
                 radarPulse = true
             }
@@ -237,8 +240,7 @@ struct LiveMapView: View {
     
     // Core custom interaction reaction particle emitter!
     private func emitReaction(_ character: String) {
-        let generator = UIImpactFeedbackGenerator(style: .light)
-        generator.impactOccurred()
+        SoundManager.shared.playTick()
         
         let screenWidth = UIScreen.main.bounds.width
         let screenHeight = UIScreen.main.bounds.height

@@ -170,8 +170,8 @@ struct ChaosView: View {
     
     // Core spin wheel actions
     private func triggerChaosSpin() {
-        let generator = UISelectionFeedbackGenerator()
-        generator.selectionChanged()
+        // Initial spin hum
+        SoundManager.shared.playTransition()
         
         withAnimation(.spring(response: 2.8, dampingFraction: 0.8)) {
             spinDegree += 1440.0 + Double.random(in: 45...360)
@@ -180,14 +180,25 @@ struct ChaosView: View {
         
         appViewModel.spinChaosWheel()
         
+        // Decelerating ticking sound simulation
+        let tickIntervals: [Double] = [
+            0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.36, 0.42, 0.48, 0.55, 0.62, 0.7, 0.78, 0.88, 0.98,
+            1.1, 1.22, 1.35, 1.5, 1.66, 1.83, 2.01, 2.2, 2.4, 2.62, 2.85
+        ]
+        
+        for delay in tickIntervals {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                SoundManager.shared.playTick()
+            }
+        }
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
             withAnimation(.spring(response: 0.45, dampingFraction: 0.72)) {
                 isGlowBurst = false
             }
             
-            // trigger haptic feedback explosion
-            let hapticGen = UINotificationFeedbackGenerator()
-            hapticGen.notificationOccurred(.success)
+            // Decryption victory chimes arpeggio & premium alert haptic
+            SoundManager.shared.playSuccess()
         }
     }
 }

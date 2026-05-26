@@ -85,6 +85,7 @@ struct OnboardingView: View {
                     if currentPage < totalPages - 1 {
                         // Forward Navigation button
                         Button(action: {
+                            SoundManager.shared.playClick()
                             withAnimation(.spring(response: 0.55, dampingFraction: 0.78)) {
                                 currentPage += 1
                             }

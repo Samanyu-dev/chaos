@@ -42,6 +42,7 @@ struct AuthView: View {
                         // Switch between Entry states
                         HStack(spacing: 0) {
                             Button(action: {
+                                SoundManager.shared.playClick()
                                 withAnimation(.spring(response: 0.4, dampingFraction: 0.78)) {
                                     isSigningUp = false
                                     showOTPStage = false
@@ -57,6 +58,7 @@ struct AuthView: View {
                             }
                             
                             Button(action: {
+                                SoundManager.shared.playClick()
                                 withAnimation(.spring(response: 0.4, dampingFraction: 0.78)) {
                                     isSigningUp = true
                                     showOTPStage = false
@@ -135,7 +137,10 @@ struct AuthView: View {
                     
                     HStack(spacing: 16) {
                         // Apple Sign In
-                        Button(action: { appViewModel.completeAuth() }) {
+                        Button(action: {
+                            SoundManager.shared.playClick()
+                            appViewModel.completeAuth()
+                        }) {
                             HStack {
                                 Image(systemName: "applelogo")
                                     .font(.title3)
@@ -151,7 +156,10 @@ struct AuthView: View {
                         }
                         
                         // Google Sign In
-                        Button(action: { appViewModel.completeAuth() }) {
+                        Button(action: {
+                            SoundManager.shared.playClick()
+                            appViewModel.completeAuth()
+                        }) {
                             HStack {
                                 Image(systemName: "g.circle.fill")
                                     .font(.title3)

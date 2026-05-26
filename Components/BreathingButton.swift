@@ -70,8 +70,6 @@ struct HapticButtonStyle: ButtonStyle {
     }
     
     private func triggerHaptic() {
-        let generator = UIImpactFeedbackGenerator(style: .medium)
-        generator.prepare()
-        generator.impactOccurred()
+        SoundManager.shared.playClick()
     }
 }

@@ -42,24 +42,28 @@ class AppViewModel: ObservableObject {
     
     // Actions & Methods
     func completeSplash() {
+        SoundManager.shared.playTransition()
         withAnimation(.spring(response: 0.65, dampingFraction: 0.82)) {
             self.appState = .onboarding
         }
     }
     
     func completeOnboarding() {
+        SoundManager.shared.playTransition()
         withAnimation(.spring(response: 0.65, dampingFraction: 0.82)) {
             self.appState = .auth
         }
     }
     
     func completeAuth() {
+        SoundManager.shared.playTransition()
         withAnimation(.spring(response: 0.65, dampingFraction: 0.82)) {
             self.appState = .mainTab
         }
     }
     
     func logOut() {
+        SoundManager.shared.playTransition()
         withAnimation(.spring(response: 0.65, dampingFraction: 0.82)) {
             self.appState = .auth
             self.activeTab = .home

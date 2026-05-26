@@ -100,7 +100,13 @@ struct FloatingOrbGuide: View {
                     .offset(y: -2)
                 }
                 .offset(y: isFloating ? -6 : 6)
+                .onTapGesture {
+                    SoundManager.shared.playOrbSound()
+                }
                 .onAppear {
+                    // Play initial welcoming companion sound chime
+                    SoundManager.shared.playOrbSound()
+                    
                     // Start soft floating animations
                     withAnimation(
                         .easeInOut(duration: 2.2)
