@@ -4,8 +4,8 @@ class SupabaseService: ObservableObject {
     static let shared = SupabaseService()
     
     // Replace with your real Supabase dashboard URL and anon key
-    var supabaseURL: String = "https://your-project-ref.supabase.co"
-    var supabaseAnonKey: String = "your-anon-public-key"
+    var supabaseURL: String = "https://ueuwvzxicotfflipntfx.supabase.co"
+    var supabaseAnonKey: String = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVldXd2enhpY290ZmZsaXBudGZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NDI3MDUsImV4cCI6MjA5NjIxODcwNX0.pQh_bDRqC3Ku3lWMqndk7AhZL5r6sr435D4ox6FeVeI"
     
     var isConfigured: Bool {
         return !supabaseURL.contains("your-project-ref") && !supabaseAnonKey.contains("your-anon-public-key")
