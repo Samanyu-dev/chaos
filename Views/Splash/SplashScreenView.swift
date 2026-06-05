@@ -12,8 +12,8 @@ struct SplashScreenView: View {
     
     var body: some View {
         ZStack {
-            // Dark cinematic background
-            Color(hex: "030308")
+            // Real-time GPU Starfield background
+            MetalSplashView()
                 .ignoresSafeArea()
             
             // Subtle mesh gradient ambient glow
@@ -27,29 +27,6 @@ struct SplashScreenView: View {
                 startRadius: 0,
                 endRadius: 280
             )
-            .ignoresSafeArea()
-            
-            // Glowing starfield / particle system
-            GeometryReader { geo in
-                ZStack {
-                    ForEach(0..<20, id: \.self) { index in
-                        Circle()
-                            .fill(index % 2 == 0 ? themeManager.currentTheme.primaryAccent : themeManager.currentTheme.secondaryAccent)
-                            .frame(width: CGFloat.random(in: 2...5), height: CGFloat.random(in: 2...5))
-                            .opacity(particlesCount > 0 ? Double.random(in: 0.3...0.8) : 0.0)
-                            .blur(radius: 0.5)
-                            .position(
-                                x: CGFloat.random(in: 0...geo.size.width),
-                                y: CGFloat.random(in: 0...geo.size.height)
-                            )
-                            .animation(
-                                .easeInOut(duration: Double.random(in: 2.0...4.0))
-                                .repeatForever(autoreverses: true),
-                                value: particlesCount
-                            )
-                    }
-                }
-            }
             .ignoresSafeArea()
             
             // Orbiting Core rings + Logo Reveal

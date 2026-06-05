@@ -13,6 +13,7 @@ struct AuthView: View {
     
     @State private var showOTPStage = false
     @State private var animateFields = false
+    @State private var useConstellationAuth = false
     
     var body: some View {
         ZStack {
@@ -40,91 +41,122 @@ struct AuthView: View {
                 // Unified Glassmorphic Authentication Card
                 GlassCard(cornerRadius: 28, fillOpacity: 0.12) {
                     VStack(spacing: 20) {
-                        // Switch between Entry states
-                        HStack(spacing: 0) {
-                            Button(action: {
-                                SoundManager.shared.playClick()
-                                withAnimation(.spring(response: 0.4, dampingFraction: 0.78)) {
-                                    isSigningUp = false
-                                    showOTPStage = false
-                                }
-                            }) {
-                                Text("LOGIN")
-                                    .font(.system(size: 13, weight: .bold, design: .rounded))
-                                    .foregroundColor(!isSigningUp ? themeManager.currentTheme.primaryText : themeManager.currentTheme.secondaryText)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 12)
-                                    .background(!isSigningUp ? .white.opacity(0.06) : .clear)
-                                    .cornerRadius(12)
-                            }
+                        if useConstellationAuth {
+                            ConstellationAuthView(onSuccess: {
+                                appViewModel.completeAuth()
+                            })
+                            .transition(.scale.combined(with: .opacity))
                             
                             Button(action: {
                                 SoundManager.shared.playClick()
-                                withAnimation(.spring(response: 0.4, dampingFraction: 0.78)) {
-                                    isSigningUp = true
-                                    showOTPStage = false
+                                withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) {
+                                    useConstellationAuth = false
                                 }
                             }) {
-                                Text("SIGN UP")
-                                    .font(.system(size: 13, weight: .bold, design: .rounded))
-                                    .foregroundColor(isSigningUp ? themeManager.currentTheme.primaryText : themeManager.currentTheme.secondaryText)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 12)
-                                    .background(isSigningUp ? .white.opacity(0.06) : .clear)
-                                    .cornerRadius(12)
+                                Text("USE SECURE PASSWORDS")
+                                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                                    .foregroundColor(themeManager.currentTheme.primaryAccent)
                             }
-                        }
-                        .background(Color.black.opacity(0.2))
-                        .cornerRadius(14)
-                        .padding(.bottom, 10)
-                        
-                        if !showOTPStage {
-                            // Stage 1: Phone / Credentials entry
-                            VStack(spacing: 16) {
-                                // Glowing phone input field
-                                GlassTextField(placeholder: "Phone Number", icon: "phone.fill", text: $phoneInput)
-                                
-                                if isSigningUp {
-                                    GlassTextField(placeholder: "Email Address", icon: "envelope.fill", text: $emailInput)
-                                } else {
-                                    GlassSecureField(placeholder: "Secure Password", icon: "lock.fill", text: $passwordInput)
-                                }
-                                
-                                BreathingButton(title: isSigningUp ? "Create Matrix Node" : "Access Tunnel", icon: "arrow.right", isGlowing: true) {
-                                    withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
-                                        showOTPStage = true
-                                    }
-                                }
-                            }
-                            .opacity(animateFields ? 1.0 : 0.0)
-                            .offset(y: animateFields ? 0 : 20)
-                            
+                            .padding(.top, 10)
                         } else {
-                            // Stage 2: OTP Verification
-                            VStack(spacing: 18) {
-                                Text("Enter the 6-digit decryption code sent to your phone:")
-                                    .font(.system(size: 12, weight: .medium, design: .rounded))
-                                    .foregroundColor(themeManager.currentTheme.secondaryText)
-                                    .multilineTextAlignment(.center)
-                                    .padding(.horizontal, 10)
-                                
-                                GlassTextField(placeholder: "OTP Decryption Code", icon: "key.fill", text: $otpInput)
-                                
-                                BreathingButton(title: "Verify & Decrypt", icon: "checkmark.shield.fill", isGlowing: true) {
-                                    appViewModel.completeAuth()
-                                }
-                                
+                            // Switch between Entry states
+                            HStack(spacing: 0) {
                                 Button(action: {
-                                    withAnimation(.spring()) {
+                                    SoundManager.shared.playClick()
+                                    withAnimation(.spring(response: 0.4, dampingFraction: 0.78)) {
+                                        isSigningUp = false
                                         showOTPStage = false
                                     }
                                 }) {
-                                    Text("Resend Code")
-                                        .font(.system(size: 11, weight: .bold))
-                                        .foregroundColor(themeManager.currentTheme.primaryAccent)
+                                    Text("LOGIN")
+                                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                                        .foregroundColor(!isSigningUp ? themeManager.currentTheme.primaryText : themeManager.currentTheme.secondaryText)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 12)
+                                        .background(!isSigningUp ? .white.opacity(0.06) : .clear)
+                                        .cornerRadius(12)
+                                }
+                                
+                                Button(action: {
+                                    SoundManager.shared.playClick()
+                                    withAnimation(.spring(response: 0.4, dampingFraction: 0.78)) {
+                                        isSigningUp = true
+                                        showOTPStage = false
+                                    }
+                                }) {
+                                    Text("SIGN UP")
+                                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                                        .foregroundColor(isSigningUp ? themeManager.currentTheme.primaryText : themeManager.currentTheme.secondaryText)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 12)
+                                        .background(isSigningUp ? .white.opacity(0.06) : .clear)
+                                        .cornerRadius(12)
                                 }
                             }
-                            .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .move(edge: .leading).combined(with: .opacity)))
+                            .background(Color.black.opacity(0.2))
+                            .cornerRadius(14)
+                            .padding(.bottom, 10)
+                            
+                            if !showOTPStage {
+                                // Stage 1: Phone / Credentials entry
+                                VStack(spacing: 16) {
+                                    // Glowing phone input field
+                                    GlassTextField(placeholder: "Phone Number", icon: "phone.fill", text: $phoneInput)
+                                    
+                                    if isSigningUp {
+                                        GlassTextField(placeholder: "Email Address", icon: "envelope.fill", text: $emailInput)
+                                    } else {
+                                        GlassSecureField(placeholder: "Secure Password", icon: "lock.fill", text: $passwordInput)
+                                    }
+                                    
+                                    BreathingButton(title: isSigningUp ? "Create Matrix Node" : "Access Tunnel", icon: "arrow.right", isGlowing: true) {
+                                        withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
+                                            showOTPStage = true
+                                        }
+                                    }
+                                }
+                                .opacity(animateFields ? 1.0 : 0.0)
+                                .offset(y: animateFields ? 0 : 20)
+                                
+                            } else {
+                                // Stage 2: OTP Verification
+                                VStack(spacing: 18) {
+                                    Text("Enter the 6-digit decryption code sent to your phone:")
+                                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                                        .foregroundColor(themeManager.currentTheme.secondaryText)
+                                        .multilineTextAlignment(.center)
+                                        .padding(.horizontal, 10)
+                                    
+                                    GlassTextField(placeholder: "OTP Decryption Code", icon: "key.fill", text: $otpInput)
+                                    
+                                    BreathingButton(title: "Verify & Decrypt", icon: "checkmark.shield.fill", isGlowing: true) {
+                                        appViewModel.completeAuth()
+                                    }
+                                    
+                                    Button(action: {
+                                        withAnimation(.spring()) {
+                                            showOTPStage = false
+                                        }
+                                    }) {
+                                        Text("Resend Code")
+                                            .font(.system(size: 11, weight: .bold))
+                                            .foregroundColor(themeManager.currentTheme.primaryAccent)
+                                    }
+                                }
+                                .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .move(edge: .leading).combined(with: .opacity)))
+                            }
+                            
+                            Button(action: {
+                                SoundManager.shared.playClick()
+                                withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) {
+                                    useConstellationAuth = true
+                                }
+                            }) {
+                                Text("DRAW CONSTELLATION SECURE KEY")
+                                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                                    .foregroundColor(themeManager.currentTheme.primaryAccent)
+                            }
+                            .padding(.top, 10)
                         }
                     }
                 }
