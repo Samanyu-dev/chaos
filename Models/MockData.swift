@@ -20,8 +20,12 @@ struct MockData {
         User(name: "Lila Chen", username: "@lila", avatar: "🌸", status: "Taking analog photos", activeEmoji: "📸", latOffset: -0.012, lonOffset: 0.018),
         User(name: "Aris Miller", username: "@aris", avatar: "🌌", status: "DJing in a Tokyo basement", activeEmoji: "🎧", latOffset: 0.008, lonOffset: -0.014),
         User(name: "Talon Reed", username: "@talon", avatar: "🦅", status: "Climbing rooftops", activeEmoji: "🧗‍♂️", latOffset: -0.005, lonOffset: -0.021),
-        User(name: "Sora Takahashi", username: "@sora", avatar: "🪁", status: "Chasing retro neon arcade high scores", activeEmoji: "🕹️", latOffset: 0.022, lonOffset: 0.012)
+        User(name: SorasInfo.name, username: "@sora", avatar: "🪁", status: "Chasing retro neon arcade high scores", activeEmoji: "🕹️", latOffset: 0.022, lonOffset: 0.012)
     ]
+    
+    private struct SorasInfo {
+        static let name = "Sora Takahashi"
+    }
     
     // Custom Trips
     static let sampleTripId1 = UUID()
@@ -109,35 +113,39 @@ struct MockData {
     static let expenses: [Expense] = [
         Expense(
             tripId: sampleTripId1,
-            title: "Golden Gai Bar Crawl Entry & Sake",
+            title: "Golden Gai Bar Crawl Sake",
             amount: 180.00,
-            payer: friends[0], // Kai paid
+            payer: friends[0],
             splits: [
                 ExpenseSplit(user: me, amount: 60.00),
                 ExpenseSplit(user: friends[0], amount: 60.00),
                 ExpenseSplit(user: friends[1], amount: 60.00)
             ],
             category: "Nightlife",
-            timestamp: Date().addingTimeInterval(-3600 * 4)
+            timestamp: Date().addingTimeInterval(-3600 * 4),
+            latOffset: 0.015,
+            lonOffset: -0.008
         ),
         Expense(
             tripId: sampleTripId1,
-            title: "Vintage Film Roll Pack (5 Pack)",
+            title: "Vintage Film Roll Pack",
             amount: 85.00,
-            payer: friends[1], // Lila paid
+            payer: friends[1],
             splits: [
                 ExpenseSplit(user: me, amount: 28.33),
                 ExpenseSplit(user: friends[0], amount: 28.33),
                 ExpenseSplit(user: friends[1], amount: 28.34)
             ],
             category: "Memories",
-            timestamp: Date().addingTimeInterval(-3600 * 24)
+            timestamp: Date().addingTimeInterval(-3600 * 24),
+            latOffset: -0.012,
+            lonOffset: 0.018
         ),
         Expense(
             tripId: sampleTripId1,
-            title: "Roppongi Basement Club VIP DJ Pass",
+            title: "Roppongi Basement Club DJ Pass",
             amount: 320.00,
-            payer: me, // Alex paid
+            payer: me,
             splits: [
                 ExpenseSplit(user: me, amount: 80.00),
                 ExpenseSplit(user: friends[0], amount: 80.00),
@@ -145,20 +153,24 @@ struct MockData {
                 ExpenseSplit(user: friends[2], amount: 80.00)
             ],
             category: "Entertainment",
-            timestamp: Date().addingTimeInterval(-3600 * 2)
+            timestamp: Date().addingTimeInterval(-3600 * 2),
+            latOffset: 0.008,
+            lonOffset: -0.014
         )
     ]
     
     // Chaos Mode Spontaneous Generator options
     static let chaosOptions: [ChaosAdventure] = [
         ChaosAdventure(
-            title: "Midnight Arcade High-Score Duel",
+            title: "Midnight Arcade Duel",
             subtitle: "Akihabara retro zone",
             mood: "Chaotic",
             locationEmoji: "🕹️",
             icon: "gamecontroller.fill",
             rating: 4.9,
-            recommendationDescription: "Sensory overload guaranteed. The loser buys fresh matcha crêpes at 3 AM. Retro rhythms & extreme buttons."
+            recommendationDescription: "Sensory overload guaranteed. The loser buys fresh matcha crêpes at 3 AM. Retro rhythms & extreme buttons.",
+            latOffset: 0.022,
+            lonOffset: 0.012
         ),
         ChaosAdventure(
             title: "Lost Tunnel Echo Karaoke",
@@ -167,7 +179,9 @@ struct MockData {
             locationEmoji: "🎤",
             icon: "waveform.circle.fill",
             rating: 4.7,
-            recommendationDescription: "A mini sound system hidden inside an architectural drainage cavity. Perfect reverb for off-beat synth covers."
+            recommendationDescription: "A mini sound system hidden inside an architectural drainage cavity. Perfect reverb for off-beat synth covers.",
+            latOffset: 0.015,
+            lonOffset: -0.008
         ),
         ChaosAdventure(
             title: "Roof Climbing Aurora Watch",
@@ -176,16 +190,25 @@ struct MockData {
             locationEmoji: "🧗‍♂️",
             icon: "wind",
             rating: 4.8,
-            recommendationDescription: "Climb past standard fire escapes to view Shibuya's neon grid meeting the upper high-altitude wind currents."
+            recommendationDescription: "Climb past standard fire escapes to view Shibuya's neon grid meeting the upper high-altitude wind currents.",
+            latOffset: -0.005,
+            lonOffset: -0.021
+        )
+    ]
+    
+    // Core Inside Jokes Pinned Geographically
+    static let jokes: [InsideJoke] = [
+        InsideJoke(
+            quote: "Aris tried to barter with the Shinjuku noodle master using vintage arcade tokens.",
+            author: "Kai Vance",
+            latOffset: 0.022,
+            lonOffset: 0.012
         ),
-        ChaosAdventure(
-            title: "Spontaneous Street Food Wheel Spin",
-            subtitle: "Unmapped back alleys",
-            mood: "Adventurous",
-            locationEmoji: "🍢",
-            icon: "sparkles",
-            rating: 4.6,
-            recommendationDescription: "Close your eyes and walk exactly 150 paces down a tiny street. Order item #4 at whatever stall you hit."
+        InsideJoke(
+            quote: "Lila stood frozen in the middle of Shibuya crossing for 10 minutes, absolute film static.",
+            author: "Alex Carter",
+            latOffset: -0.012,
+            lonOffset: 0.018
         )
     ]
 }

@@ -1,0 +1,15 @@
+# Xcode and Build folders
+build/
+DerivedData/
+*.xcuserstate
+*.xcuserdatad
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Operating System temporary files
+.DS_Store
+Thumbs.db
+*.swp
+*~

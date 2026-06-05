@@ -28,16 +28,53 @@ class AppViewModel: ObservableObject {
     @Published var trips: [Trip] = MockData.trips
     @Published var activeTripIndex: Int = 0
     
-    @Published var memories: [Memory] = MockData.memories
-    @Published var expenses: [Expense] = MockData.expenses
+    @Published var memories: [Memory] = []
+    @Published var expenses: [Expense] = []
     @Published var chaosOptions: [ChaosAdventure] = MockData.chaosOptions
     
     @Published var isChaosSpinning: Bool = false
     @Published var selectedChaosAdventure: ChaosAdventure? = nil
     
+    private var cancellables = Set<AnyCancellable>()
+    
     var activeTrip: Trip {
         guard activeTripIndex < trips.count else { return trips[0] }
         return trips[activeTripIndex]
+    }
+    
+    init() {
+        // Automatically sync with Apple Sign-in state
+        AuthManager.shared.$isAuthenticated
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] authenticated in
+                guard let self = self else { return }
+                if authenticated {
+                    self.appState = .mainTab
+                    self.fetchBackendData()
+                } else {
+                    if self.appState == .mainTab {
+                        self.appState = .auth
+                    }
+                }
+            }
+            .store(in: &cancellables)
+            
+        // Initial data loading fallbacks
+        self.memories = MockData.memories
+        self.expenses = MockData.expenses
+    }
+    
+    // Sync active data from Supabase Service
+    func fetchBackendData() {
+        let token = AuthManager.shared.activeToken
+        
+        MemoryService.shared.fetchMemories(jwtToken: token) { [weak self] loadedMemories in
+            self?.memories = loadedMemories
+        }
+        
+        ExpenseService.shared.fetchExpenses(jwtToken: token) { [weak self] loadedExpenses in
+            self?.expenses = loadedExpenses
+        }
     }
     
     // Actions & Methods
@@ -57,20 +94,22 @@ class AppViewModel: ObservableObject {
     
     func completeAuth() {
         SoundManager.shared.playTransition()
+        // Fallback for manual bypass passcode (e.g. Apple Review credentials '1997')
+        AuthManager.shared.isAuthenticated = true
         withAnimation(.spring(response: 0.65, dampingFraction: 0.82)) {
             self.appState = .mainTab
         }
     }
     
     func logOut() {
-        SoundManager.shared.playTransition()
+        SoundManager.shared.logout()
         withAnimation(.spring(response: 0.65, dampingFraction: 0.82)) {
             self.appState = .auth
             self.activeTab = .home
         }
     }
     
-    func addExpense(title: String, amount: Double, payer: User, splitUsers: [User]) {
+    func addExpense(title: String, amount: Double, payer: User, splitUsers: [User], category: String, latOffset: Double, lonOffset: Double) {
         let splitAmount = amount / Double(splitUsers.count)
         let splitEntries = splitUsers.map { user in
             ExpenseSplit(user: user, amount: splitAmount)
@@ -82,12 +121,20 @@ class AppViewModel: ObservableObject {
             amount: amount,
             payer: payer,
             splits: splitEntries,
-            category: "General",
-            timestamp: Date()
+            category: category,
+            timestamp: Date(),
+            latOffset: latOffset,
+            lonOffset: lonOffset
         )
         
+        // Optimistic UI updates
         withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) {
             self.expenses.insert(newExpense, at: 0)
+        }
+        
+        // Dispatch insert payload to Supabase
+        ExpenseService.shared.uploadExpense(expense: newExpense, jwtToken: AuthManager.shared.activeToken) { _ in
+            // DB completes upload sync in background
         }
     }
     
@@ -125,8 +172,14 @@ class AppViewModel: ObservableObject {
             lonOffset: Double.random(in: -0.02...0.02)
         )
         
+        // Optimistic UI updates
         withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
             self.memories.insert(newMemory, at: 0)
+        }
+        
+        // Dispatch insert payload to Supabase
+        MemoryService.shared.uploadMemory(memory: newMemory, jwtToken: AuthManager.shared.activeToken) { _ in
+            // DB completes upload sync in background
         }
     }
 }

@@ -1,4 +1,5 @@
 import SwiftUI
+import AuthenticationServices
 
 struct AuthView: View {
     @EnvironmentObject var appViewModel: AppViewModel
@@ -139,7 +140,10 @@ struct AuthView: View {
                         // Apple Sign In
                         Button(action: {
                             SoundManager.shared.playClick()
-                            appViewModel.completeAuth()
+                            let request = AuthManager.shared.startAppleSignInFlow()
+                            let controller = ASAuthorizationController(authorizationRequests: [request])
+                            controller.delegate = AuthManager.shared
+                            controller.performRequests()
                         }) {
                             HStack {
                                 Image(systemName: "applelogo")

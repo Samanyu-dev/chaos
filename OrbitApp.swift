@@ -20,7 +20,7 @@ struct OrbitApp: App {
                     AuthView()
                         .transition(.asymmetric(insertion: .opacity, removal: .scale))
                 case .mainTab:
-                    MainTabView()
+                    MapOSView()
                         .transition(.opacity)
                 }
             }

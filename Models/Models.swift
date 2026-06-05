@@ -46,8 +46,8 @@ struct Memory: Identifiable, Hashable {
     var perspectiveName: String
     var gradientColors: [Color]
     var imageURL: String? = nil
-    var latOffset: Double
-    var lonOffset: Double
+    var latOffset: Double // Geographic Anchor
+    var lonOffset: Double // Geographic Anchor
 }
 
 struct ExpenseSplit: Identifiable, Hashable {
@@ -66,6 +66,8 @@ struct Expense: Identifiable, Hashable {
     var splits: [ExpenseSplit]
     var category: String
     var timestamp: Date
+    var latOffset: Double // Geographic Anchor
+    var lonOffset: Double // Geographic Anchor
 }
 
 struct ChaosAdventure: Identifiable, Hashable {
@@ -77,4 +79,14 @@ struct ChaosAdventure: Identifiable, Hashable {
     var icon: String
     var rating: Double
     var recommendationDescription: String
+    var latOffset: Double // Geographic Anchor
+    var lonOffset: Double // Geographic Anchor
+}
+
+struct InsideJoke: Identifiable, Hashable {
+    var id = UUID()
+    var quote: String
+    var author: String
+    var latOffset: Double // Geographic Anchor
+    var lonOffset: Double // Geographic Anchor
 }
